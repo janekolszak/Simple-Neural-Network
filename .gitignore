@@ -1,0 +1,26 @@
+# Compiled Object files
+bin
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# CMake/Makefile files
+*.cmake
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+install_manifest.txt
+
+# Sublime files
+*.sublime-project
+*.sublime-workspace

@@ -8,6 +8,7 @@
 
 #include <snn/types.hpp>
 #include <snn/basic/neurons/basic_neuron.hpp>
+#include <snn/basic/neurons/activation_functions.hpp>
 
 namespace snn {
 
@@ -24,22 +25,23 @@ struct BasicLayer {
     static_assert(std::is_base_of<BasicNeuron<LearningParams...>, NeuronType>::value,
                   "BasicNeuron needs to be a base class of NeuronType");
 
-    typedef boost::ptr_vector<NeuronTkype> neuron_vec;
+    typedef boost::ptr_vector<NeuronType> neuron_vec;
     typedef NeuronType neuron_type;
 
-    SnnNeuronVec _neurons;
+    neuron_vec _neurons;
 
-    BasicLayer(size_t numNeurons) {
-        _neurons.reserve(numNe
-                         urons);
+    BasicLayer(size_t numNeurons,
+               SnnVal (*activation)(SnnVal),
+               SnnVal (*activationDerivative)(SnnVal)) {
+        _neurons.reserve(numNeurons);
         for (size_t i = 0; i < numNeurons; ++i)
-            _neurons.push_back(new NeuronType);
+            _neurons.push_back(new NeuronType(0.0, activation, activationDerivative));
     }
 
-    BasicLayer(std::initializer_list<SnnVal> values) {
-        _neurons.reserve(values.size());
+    BasicLayer(std::initializer_list<SnnVal> values ) {
+        // _neurons.reserve(values.size());
         for (SnnVal value : values)
-            _neurons.push_back(new NeuronType(value));
+            _neurons.push_back(new NeuronType(value, snn::logSigmoid, snn::logSigmoidDerivative));
     }
 
     virtual void forward() {

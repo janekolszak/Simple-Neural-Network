@@ -2,6 +2,7 @@
 #define SNN_BASIC_NEURON_HPP
 
 #include <snn/types.hpp>
+#include <snn/basic/neurons/activation_functions.hpp>
 
 namespace snn {
 
@@ -21,17 +22,12 @@ struct BasicNeuron {
     SnnVal (*_activation)(SnnVal)           = snn::logSigmoid;
     SnnVal (*_activationDerivative)(SnnVal) = snn::logSigmoidDerivative;
 
+    BasicNeuron() {}
     BasicNeuron(SnnVal &value,
-                SnnValVec &weights,
-                SnnVal & (*activation)(SnnVal),
-                SnnVal & (*activationDerivative)(SnnVal))
-        : _value(value),
-          _bias(0.0)
+                SnnVal (*activation)(SnnVal),
+                SnnVal (*activationDerivative)(SnnVal))
+        : _value(value)
     {
-        _inputWeights.insert(_inputWeights.begin(),
-                             weights.begin() + 1,
-                             weights.end());
-        _bias = weights.front();
         _activation = activation;
         _activationDerivative = activationDerivative;
     }
@@ -68,6 +64,10 @@ struct BasicNeuron {
     }
 };
 
+template <typename... LearningParams>
+SnnVal operator-(const SnnVal &value, BasicNeuron<LearningParams...> &neuron) {
+    return value - neuron._value;
+}
 
 } // namespace snn
 

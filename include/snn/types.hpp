@@ -12,9 +12,6 @@ typedef std::vector<SnnVal> SnnValVec;
 typedef std::vector<std::reference_wrapper<SnnVal>> SnnValRefVec;
 typedef std::list<SnnValVec> SnnDataset;
 
-
-
-
 bool operator==(SnnValVec &valuesA, SnnValVec &valuesB) {
     if (valuesA.size() != valuesB.size())
         return false;

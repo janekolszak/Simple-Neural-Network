@@ -17,19 +17,21 @@ namespace snn {
  *
  * TODO: The for loops can be concurent.
  */
+// TODO: Get learning Params from NeuronType
 template <typename NeuronType, typename... LearningParams>
 struct BasicLayer {
 
-    // static_assert(std::is_base_of<BasicNeuron<LearningParams...>, NeuronType>::value,
-    //               "BasicNeuron needs to be a base class of NeuronType");
+    static_assert(std::is_base_of<BasicNeuron<LearningParams...>, NeuronType>::value,
+                  "BasicNeuron needs to be a base class of NeuronType");
 
-    typedef boost::ptr_vector<NeuronType> SnnNeuronVec;
-    typedef NeuronType neurontype;
+    typedef boost::ptr_vector<NeuronTkype> neuron_vec;
+    typedef NeuronType neuron_type;
 
     SnnNeuronVec _neurons;
 
     BasicLayer(size_t numNeurons) {
-        _neurons.reserve(numNeurons);
+        _neurons.reserve(numNe
+                         urons);
         for (size_t i = 0; i < numNeurons; ++i)
             _neurons.push_back(new NeuronType);
     }
@@ -40,12 +42,27 @@ struct BasicLayer {
             _neurons.push_back(new NeuronType(value));
     }
 
-    virtual SnnValVec values() {
-        SnnValVec values;
-        values.reserve(_neurons.size());
+    virtual void forward() {
         for (auto &neuron : _neurons)
-            values.push_back(neuron._value);
-        return values;
+            neuron.forward();
+    }
+
+    virtual void backward() {
+        for (auto &neuron : _neurons)
+            neuron.backward();
+    }
+
+    virtual void learn(LearningParams... learningParams) {
+        for (auto &neuron : _neurons)
+            neuron.learn(learningParams...);
+    }
+
+    virtual SnnValVec getDeltas() {
+        SnnValVec deltas;
+        deltas.reserve(_neurons.size());
+        for (auto &neuron : _neurons)
+            deltas.push_back(neuron._delta);
+        return deltas;
     }
 
     virtual void setValues(SnnValVec &values) {
@@ -53,13 +70,17 @@ struct BasicLayer {
         std::copy(values.begin(), values.end(), _neurons.begin());
     }
 
-    virtual void forward() = 0;
+    virtual SnnValVec getValues() {
+        SnnValVec values;
+        values.reserve(_neurons.size());
+        for (auto &neuron : _neurons)
+            values.push_back(neuron._value);
+        return values;
+    }
 
-    virtual void backward() = 0;
-
-    virtual void learn(LearningParams... learningParams) = 0;
-
-    virtual SnnValVec deltas() = 0;
+    virtual neuron_vec &neurons() {
+        return _neurons;
+    }
 
 };
 

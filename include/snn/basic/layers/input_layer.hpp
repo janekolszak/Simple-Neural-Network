@@ -17,10 +17,7 @@ struct InputLayer: public BasicForwardBackwardLayer<NeuronType, LearningParams..
     virtual void forward() { }
     virtual void backward() { }
     virtual void learn(LearningParams... learningParams) {}
-    virtual SnnValVec deltas() {
-        SnnValVec v;
-        return v;
-    }
+
 };
 
 } // namespace snn

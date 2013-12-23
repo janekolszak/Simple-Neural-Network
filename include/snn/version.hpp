@@ -7,7 +7,7 @@
  * SNN_VERSION / 100 % 1000 is the minor version
  * SNN_VERSION / 100000 is the major version
  */
-#define SNN_VERSION 105500
+#define SNN_VERSION 000100
 
 /**
  * SNN_LIB_VERSION must be defined to be the same as SNN_VERSION
@@ -16,7 +16,7 @@
  *     y is the minor version number, 
  *     z is the patch level if not 0.
  */
-#define SNN_LIB_VERSION "1_55"
+#define SNN_LIB_VERSION "0.1.0"
 
 
 #endif 

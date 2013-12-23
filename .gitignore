@@ -1,5 +1,6 @@
 # Compiled Object files
 bin
+lib
 *.slo
 *.lo
 *.o
@@ -7,6 +8,7 @@ bin
 # Compiled Dynamic libraries
 *.so
 *.dylib
+*.pyd
 
 # Compiled Static libraries
 *.lai

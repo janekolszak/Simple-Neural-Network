@@ -1,6 +1,6 @@
 # Simple Neural Network
 
-Simple Neural Network (SNN) is a <b>C++</b> library (<b>Python bindings planned</b>) with an implementation of artificial neural networks. The main objective is to deliver an understandable but powerfull library, which <b>anyone</b> could easily modify. 
+Simple Neural Network (SNN) is a <b>C++</b> library (<b>Python bindings planned</b>) with an implementation of artificial neural networks. The main objective is to deliver an understandable but powerful library, which could be easily modified by <b>anyone</b> .
 
 <b><i>If <b>you</b> want to implement a well known algorithm or develop and test your own this is a perfect place for you!</i></b>
 
@@ -33,3 +33,11 @@ For example:
 
     ./configure -DBOOST_ROOT=path/to/boostroot -DPYTHONLIBS_LIBRARYDIR=path/to/libpython2.7.so
     make
+
+# Implementation guidelines
+
+OK, so you want to expand SNN' functionality! Nice! It can be for your purpose only or you gonna make a pull request later on, it's up to you!
+
+Some things, you should keep in mind:
+* We intentionally don't declare private class members to make writing code easier, but you should still avoid spaghetti code!
+* If you implement another learning algorithm, keep it in an Neuron. Just declare another kind of Neuron and declare a <i>modify(...)</i> method.

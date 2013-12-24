@@ -9,13 +9,13 @@ namespace snn {
 template <typename NeuronType, typename... LearningParams>
 struct InputLayer: public BasicLayer<NeuronType, LearningParams...> {
 
-    InputLayer(size_t numNeurons):
-        BasicLayer<NeuronType, LearningParams...>(numNeurons) {}
+    InputLayer(size_t numNeurons,
+               SnnVal (*activation)(SnnVal),
+               SnnVal (*activationDerivative)(SnnVal)):
+        BasicLayer<NeuronType, LearningParams...>(numNeurons, activation, activationDerivative) {}
 
-    InputLayer(std::initializer_list<SnnVal> values,
-               SnnVal & (*activation)(SnnVal),
-               SnnVal & (*activationDerivative)(SnnVal) ):
-        BasicLayer<NeuronType, LearningParams...>(values, activation, activationDerivative) {}
+    InputLayer(std::initializer_list<SnnVal> values):
+        BasicLayer<NeuronType, LearningParams...>(values) {}
 
     virtual void forward() { }
     virtual void backward() { }

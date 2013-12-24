@@ -52,6 +52,13 @@ struct BasicNeuron {
                                     _outputWeights.end(),
                                     _outputDeltas.begin(),
                                     0.0);
+        _delta *= _activationDerivative(_inputSum + _bias);
+    }
+
+    virtual void backward(SnnVal desiredOutput)
+    {
+        _delta = desiredOutput - _value;
+        _delta *= _activationDerivative(_inputSum + _bias);
     }
 
     virtual size_t getNumWeights() {

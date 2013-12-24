@@ -164,98 +164,76 @@ BOOST_AUTO_TEST_SUITE_END()
 
 
 
-// BOOST_AUTO_TEST_SUITE(PerceptronTest)
+BOOST_AUTO_TEST_SUITE(PerceptronTest)
 
-// BOOST_AUTO_TEST_CASE( PERCEPTRON_forward )
-// {
-//     Perceptron p = {2, 2, 2};
-//     p.forward({1, 2});
-// }
-
-
-// BOOST_AUTO_TEST_CASE( PERCEPTRON_backward )
-// {
-//     Perceptron p = {2, 2, 2};
-//     p.backward({1.4, 2});
-// }
+BOOST_AUTO_TEST_CASE( PERCEPTRON_forward )
+{
+    ScalarLearningRatePerceptron p = {2, 2, 2};
+    p.forward({1, 2});
+}
 
 
-// BOOST_AUTO_TEST_CASE( PERCEPTRON_modify )
-// {
-//     Perceptron p = {2, 10, 2};
-//     SnnValVec learningRate(p.getNumWeights());
-//     fill(learningRate.begin(), learningRate.end(), 1);
-
-//     p.forward({1.4, 2});
-//     p.backward({1.4, 2});
-//     p.modify(learningRate);
-//     SnnValVec out1 =  p.getOutputs();
-
-//     p.forward({1.4, 2});
-//     p.backward({1.4, 2});
-//     p.modify(learningRate);
-//     SnnValVec out2 =  p.getOutputs();
-
-//     BOOST_REQUIRE( out1 != out2);
-
-// }
+BOOST_AUTO_TEST_CASE( PERCEPTRON_backward )
+{
+    ScalarLearningRatePerceptron p = {2, 2, 2};
+    p.backward({1.4, 2});
+}
 
 
-// BOOST_AUTO_TEST_CASE( PERCEPTRON_simple_backprop )
-// {
-//     SnnVal target = 0.415;
+BOOST_AUTO_TEST_CASE( PERCEPTRON_modify )
+{
+    ScalarLearningRatePerceptron p = {2, 10, 2};
+    SnnVal learningRate = 1;
 
-//     Perceptron p = {1, 1, 1, 1, 1, 1, 1};
-//     SnnDataset trainSet = {
-//         {1.0}, { target}
-//     };
+    p.forward({1.4, 2});
+    p.backward({1.4, 2});
+    p.learn(learningRate);
+    SnnValVec out1 =  p.getOutputs();
 
-//     SnnValVec learningRate(p.getNumWeights());
-//     fill(learningRate.begin(), learningRate.end(), 10);
+    p.forward({1.4, 2});
+    p.backward({1.4, 2});
+    p.learn(learningRate);
+    SnnValVec out2 =  p.getOutputs();
 
-//     train(p, trainSet, 10);
-
-//     // BOOST_CHECK_CLOSE( p.getOutputs().front(), target, 0.1 );
-
-//     // for (auto itSet =  trainSet.begin();
-//     //         itSet != trainSet.end();
-//     //         std::advance (itSet, 2)) {
-//     //     SnnValVec &in = *itSet;
-//     //     SnnValVec &out = *std::next(itSet);
-
-//     //     p.forward(in);
-//     //     cout << in << " " << p.getOutputs() << " " << out << std::endl;
-//     //     cout.flush();
-//     // }
-// }
-
-// BOOST_AUTO_TEST_CASE( PERCEPTRON_xor )
-// {
-//     Perceptron p = {2, 2, 1};
-
-//     SnnDataset trainSet = {
-//         {0, 0}, {0},
-//         {1, 0}, {1},
-//         {0, 1}, {1},
-//         {1, 1}, {0}
-//     };
-
-//     cout << p.getNumWeights() << endl;
-//     // cout.precision(4);
-//     train(p, trainSet, 8000);
-
-//     for (auto itSet =  trainSet.begin();
-//             itSet != trainSet.end();
-//             std::advance (itSet, 2)) {
-//         SnnValVec &in = *itSet;
-//         SnnValVec &out = *std::next(itSet);
-
-//         p.forward(in);
+    BOOST_REQUIRE( out1 != out2);
+}
 
 
-//         cout << in << " " << p.getOutputs() << " " << out << std::endl;
-//     }
-// }
+BOOST_AUTO_TEST_CASE( PERCEPTRON_simple_backprop )
+{
+    SnnVal target = 0.415;
 
-// BOOST_AUTO_TEST_SUITE_END()
+    ScalarLearningRatePerceptron p = {1, 1, 1, 1, 1, 1, 1};
+    SnnDataset trainSet = {
+        {1.0}, { target}
+    };
+
+    train(p, trainSet, 100);
+
+    BOOST_CHECK_CLOSE( p.getOutputs().front(), target, 10 );
+
+    // printTrainingResults(p,trainSet);
+
+}
+
+BOOST_AUTO_TEST_CASE( PERCEPTRON_xor )
+{
+    ScalarLearningRatePerceptron p = {2, 2, 1};
+
+    SnnDataset trainSet = {
+        {0, 0}, {0},
+        {1, 0}, {1},
+        {0, 1}, {1},
+        {1, 1}, {0}
+    };
+
+    cout << p.getNumWeights() << endl;
+
+    train(p, trainSet, 1000000);
+
+    printTrainingResults(p, trainSet);
+
+}
+
+BOOST_AUTO_TEST_SUITE_END()
 

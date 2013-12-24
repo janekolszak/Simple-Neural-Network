@@ -4,6 +4,7 @@
 #include <snn/version.hpp>
 #include <snn/types.hpp>
 #include <snn/logging.hpp>
+#include <snn/snn_utils.hpp>
 
 
 #include <snn/basic/neuron.hpp>

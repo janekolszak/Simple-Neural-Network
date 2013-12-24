@@ -4,10 +4,9 @@
 #include <initializer_list>
 #include <iterator>     // std::advance std::prev
 #include <chrono>
+#include <iostream>
 #include <random>
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/iterator/zip_iterator.hpp>
-#include <boost/tuple/tuple.hpp>
 
 
 #include <snn/types.hpp>
@@ -15,16 +14,19 @@
 #include <snn/basic/layers/input_layer.hpp>
 #include <snn/basic/layers/output_layer.hpp>
 #include <snn/basic/layers/basic_layer.hpp>
-
+#include <snn/basic/neurons/neuron_utils.hpp>
 
 namespace snn {
-
+// TODO delete
+using namespace std;
 template <typename NeuronType, typename... LearningParams>
 struct BasicPerceptron {
 
     typedef boost::ptr_vector<BasicLayer<NeuronType, LearningParams...> > layer_vec;
     typedef typename BasicLayer<NeuronType, LearningParams...>::neuron_vec neuron_vec;
     layer_vec _layers;
+
+    virtual void learn(LearningParams... learningParams) = 0;
 
     BasicPerceptron(std::initializer_list<size_t> layerSizes) {
 
@@ -74,8 +76,10 @@ struct BasicPerceptron {
 
         _layers.front().setValues(inputs);
 
-        for (auto &layer : _layers)
-            layer.forward();
+        for (auto itL = _layers.begin() + 1;
+                itL != _layers.end();
+                ++itL)
+            itL->forward();
     }
 
     void backward(std::initializer_list<SnnVal> outputsLst) {
@@ -90,25 +94,18 @@ struct BasicPerceptron {
 
         // Compute difference between desired output
         // and perception's output
-        auto b = boost::make_zip_iterator(boost::make_tuple(outNeurons.begin(), desiredOutputs.begin()));
-        auto e = boost::make_zip_iterator(boost::make_tuple(outNeurons.end(),   desiredOutputs.end()));
+        auto itN = outNeurons.begin();
+        auto itO = desiredOutputs.begin();
+        for (; itO != desiredOutputs.end();
+                ++itN, ++itO) {
+            itN->backward(*itO);
+        }
 
-//TODO uncomment!!!
-        // std::for_each(b, e, [](const boost::tuple<NeuronType &, SnnVal &> &t)
-        // {
-        //     t.get<0>()._delta = t.get<1>() - t.get<0>()._value;
-        // });
-
-        for (auto &layer : _layers)
-            layer.backward();
-
+        for (auto itL = _layers.rbegin() + 1;
+                itL != _layers.rend();
+                ++itL)
+            itL->backward();
     }
-
-    // void learn(SnnValVec beta) {
-    //     auto itBeta = beta.begin();
-    //     for (auto &layer : _layers)
-    //         layer.learn(itBeta);
-    // }
 
     SnnValVec getOutputs() {
         SnnValVec outputs;
@@ -145,6 +142,21 @@ struct BasicPerceptron {
         return weights;
     }
 };
+
+template <typename NeuronType, typename... LearningParams>
+void printTrainingResults(BasicPerceptron<NeuronType, LearningParams... > &perceptron,
+                          SnnDataset &trainSet) {
+    for (auto itSet =  trainSet.begin();
+            itSet != trainSet.end();
+            std::advance (itSet, 2)) {
+        SnnValVec &in = *itSet;
+        SnnValVec &out = *std::next(itSet);
+
+        perceptron.forward(in);
+        std::cout << in << " " << out << " " << perceptron.getOutputs() << std::endl;
+        std::cout.flush();
+    }
+}
 
 } // namespace snn
 

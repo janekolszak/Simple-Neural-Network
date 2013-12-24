@@ -24,24 +24,49 @@ struct ScalarLearningRateNeuron: BasicNeuron<SnnVal> {
 
     void learn(SnnVal learningRate)
     {
-        SnnVal valueDerivative = _activationDerivative(_inputSum);
-        for (auto &weight : _inputWeights) {
-            weight += learningRate * _delta *  valueDerivative;
+        auto itW = _inputWeights.begin();
+        auto itV = _inputValues.begin();
+        for (; itW != _inputWeights.end();
+                ++itW, ++itV) {
+            *itW += *itV * learningRate * _delta;
         }
-        _bias += learningRate * _delta *  valueDerivative;
+        _bias += learningRate * _delta;
+        // cout << _bias << endl;
     }
 };
 
-// struct ScalarLearningRatePerceptron: BasicPerceptron<ScalarLearningRateNeuron, SnnVal> {
+struct ScalarLearningRatePerceptron: BasicPerceptron<ScalarLearningRateNeuron, SnnVal> {
 
-//     ScalarLearningRatePerceptron(std::initializer_list<size_t> layerSizes)
-//         : BasicPerceptron<ScalarLearningRateNeuron, SnnVal>(layerSizes) {}
+    ScalarLearningRatePerceptron(std::initializer_list<size_t> layerSizes)
+        : BasicPerceptron<ScalarLearningRateNeuron, SnnVal>(layerSizes) {}
 
-//     void learn(SnnVal learningRate) {
-//         for (auto &layer : _layers)
-//             layer.learn(learningRate);
-//     }
-// };
+    void learn(SnnVal learningRate) {
+        for (auto &layer : _layers)
+            layer.learn(learningRate);
+    }
+};
+
+
+void train(ScalarLearningRatePerceptron &perceptron, SnnDataset dataset, size_t numEpochs) {
+    SnnVal learningRate = 0.7;
+
+    for (size_t i = 0; i < numEpochs; ++i) {
+        for (auto itSet =  dataset.begin();
+                itSet != dataset.end();
+                std::advance (itSet, 2)) {
+            SnnValVec &in = *itSet;
+            SnnValVec &out = *std::next(itSet);
+            // cout << "-----------------------------------" << endl;
+            // cout << "WAGI " <<   perceptron.getWeights() << endl;
+
+            perceptron.forward(in);
+            // cout << "OUT " << perceptron.getOutputs() << endl;
+            perceptron.backward(out);
+
+            perceptron.learn(learningRate);
+        }
+    }
+}
 
 } // namespace snn
 

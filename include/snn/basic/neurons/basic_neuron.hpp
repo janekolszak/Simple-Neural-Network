@@ -1,6 +1,8 @@
 #ifndef SNN_BASIC_NEURON_HPP
 #define SNN_BASIC_NEURON_HPP
 
+#include <memory>
+
 #include <snn/types.hpp>
 #include <snn/basic/neurons/activation_functions.hpp>
 
@@ -19,20 +21,37 @@ struct BasicNeuron {
     SnnValRefVec _inputValues;
     SnnValRefVec _outputDeltas;
 
-    SnnVal (*_activation)(SnnVal)           = snn::logSigmoid;
-    SnnVal (*_activationDerivative)(SnnVal) = snn::logSigmoidDerivative;
+    ActivationFunction *_activation = new LogSigmoid();
 
-    BasicNeuron() {}
+    BasicNeuron(): _activation(new LogSigmoid()) {}
+
     BasicNeuron(SnnVal &value,
-                SnnVal (*activation)(SnnVal),
-                SnnVal (*activationDerivative)(SnnVal))
-        : _value(value)
-    {
-        _activation = activation;
-        _activationDerivative = activationDerivative;
+                ActivationFunction *activation)
+        : _value(value),
+          _activation(activation) {}
+
+
+    ~BasicNeuron() {
+        // TODO napraw
+        // delete _activation;
+        // _activation = nullptr;
     }
 
-    BasicNeuron &operator=(SnnVal newValue) {
+    virtual void connectSource(BasicNeuron &source,
+                               const SnnVal &weight)
+    {
+        _inputValues.push_back(source._value);
+        _inputWeights.push_back(weight);
+    }
+
+
+    virtual void connectSink(BasicNeuron &sink)
+    {
+        _outputWeights.push_back(sink._inputWeights.back());
+        _outputDeltas.push_back(sink._delta);
+    }
+
+    BasicNeuron &operator=(const SnnVal &newValue) {
         _value = newValue;
         return *this;
     }
@@ -43,7 +62,7 @@ struct BasicNeuron {
                                        _inputWeights.end(),
                                        _inputValues.begin(),
                                        0.0);
-        _value = _activation(_inputSum + _bias);
+        _value = _activation->value(_inputSum + _bias);
     }
 
     virtual void backward()
@@ -52,13 +71,13 @@ struct BasicNeuron {
                                     _outputWeights.end(),
                                     _outputDeltas.begin(),
                                     0.0);
-        _delta *= _activationDerivative(_inputSum + _bias);
+        _delta *= _activation->derivative(_inputSum + _bias);
     }
 
-    virtual void backward(SnnVal desiredOutput)
+    virtual void backward(const SnnVal &desiredOutput)
     {
         _delta = desiredOutput - _value;
-        _delta *= _activationDerivative(_inputSum + _bias);
+        _delta *= _activation->derivative(_inputSum + _bias);
     }
 
     virtual size_t getNumWeights() {
@@ -72,7 +91,7 @@ struct BasicNeuron {
 };
 
 template <typename... LearningParams>
-SnnVal operator-(const SnnVal &value, BasicNeuron<LearningParams...> &neuron) {
+SnnVal operator-(const SnnVal &value, const BasicNeuron<LearningParams...> &neuron) {
     return value - neuron._value;
 }
 

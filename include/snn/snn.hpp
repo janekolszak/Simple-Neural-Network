@@ -7,10 +7,11 @@
 #include <snn/snn_utils.hpp>
 
 
-#include <snn/basic/neuron.hpp>
-#include <snn/basic/layer.hpp>
-#include <snn/basic/perceptron.hpp>
-#include <snn/basic/utils.hpp>
+
+// #include <snn/basic/neuron.hpp>
+// #include <snn/basic/layer.hpp>
+// #include <snn/basic/perceptron.hpp>
+// #include <snn/basic/utils.hpp>
 
 
 #include <snn/basic/neurons/activation_functions.hpp>
@@ -21,6 +22,10 @@
 #include <snn/basic/layers/input_layer.hpp>
 #include <snn/basic/layers/output_layer.hpp>
 
+
 #include <snn/basic/networks/basic_perceptron.hpp>
+
+#include <snn/implementations/scalar_learning_rate.hpp>
+#include <snn/implementations/scalar_learning_rate_momentum.hpp>
 
 #endif

@@ -15,6 +15,7 @@
 #include <snn/basic/layers/output_layer.hpp>
 #include <snn/basic/layers/basic_layer.hpp>
 #include <snn/basic/neurons/neuron_utils.hpp>
+#include <snn/basic/neurons/activation_functions.hpp>
 
 namespace snn {
 // TODO delete
@@ -28,26 +29,28 @@ struct BasicPerceptron {
 
     virtual void learn(LearningParams... learningParams) = 0;
 
-    BasicPerceptron(std::initializer_list<size_t> layerSizes) {
+    BasicPerceptron(std::initializer_list<size_t> layerSizes)
+        : BasicPerceptron(layerSizes, 0.0, 1.0) {}
 
+    BasicPerceptron(std::initializer_list<size_t> layerSizes,
+                    const SnnVal &outMin,
+                    const SnnVal &outMax)
+    {
         assert(layerSizes.size() >= 2);
 
         // Setup layers
         _layers.reserve(layerSizes.size());
         _layers.push_back(new InputLayer<NeuronType, LearningParams...>(*layerSizes.begin(),
-                          snn::logSigmoid,
-                          snn::logSigmoidDerivative));
+                          new snn::LogSigmoid()));
 
         for (auto itLayerSize = layerSizes.begin() + 1;
                 itLayerSize != layerSizes.end() - 1;
                 ++itLayerSize)
             _layers.push_back(new BasicLayer<NeuronType, LearningParams...>(*itLayerSize,
-                              snn::logSigmoid,
-                              snn::logSigmoidDerivative));
+                              new snn::LogSigmoid(outMin,outMax)));
 
         _layers.push_back(new OutputLayer<NeuronType, LearningParams...>(*(layerSizes.end() - 1),
-                          snn::logSigmoid,
-                          snn::logSigmoidDerivative));
+                          new snn::LogSigmoid(outMin, outMax)));
 
         // Weights are going to be random
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();

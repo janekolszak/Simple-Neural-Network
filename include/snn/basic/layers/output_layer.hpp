@@ -9,9 +9,8 @@ template <typename NeuronType, typename... LearningParams>
 struct OutputLayer : public BasicLayer<NeuronType, LearningParams...> {
 
     OutputLayer(size_t numNeurons,
-                SnnVal (*activation)(SnnVal),
-                SnnVal (*activationDerivative)(SnnVal)):
-        BasicLayer<NeuronType, LearningParams...>(numNeurons, activation, activationDerivative) {}
+                ActivationFunction *activation):
+        BasicLayer<NeuronType, LearningParams...>(numNeurons, activation) {}
 
     OutputLayer(std::initializer_list<SnnVal> values):
         BasicLayer<NeuronType, LearningParams...>(values) {}

@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-#include <snn/basic/networks/basic_perceptron.hpp>
 
 namespace snn {
 

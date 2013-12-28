@@ -18,10 +18,8 @@ template<typename... LearningParams>
 void connectNeurons(BasicNeuron<LearningParams...> &source,
                     BasicNeuron<LearningParams...> &sink,
                     SnnVal weight) {
-    sink._inputValues.push_back(source._value);
-    sink._inputWeights.push_back(weight);
-    source._outputWeights.push_back(sink._inputWeights.back());
-    source._outputDeltas.push_back(sink._delta);
+    sink.connectSource(source, weight);
+    source.connectSink(sink);
 }
 
 } // namespace snn

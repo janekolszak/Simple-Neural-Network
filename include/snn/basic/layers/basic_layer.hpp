@@ -31,17 +31,16 @@ struct BasicLayer {
     neuron_vec _neurons;
 
     BasicLayer(size_t numNeurons,
-               SnnVal (*activation)(SnnVal),
-               SnnVal (*activationDerivative)(SnnVal)) {
+               ActivationFunction *activation) {
         _neurons.reserve(numNeurons);
         for (size_t i = 0; i < numNeurons; ++i)
-            _neurons.push_back(new NeuronType(0.0, activation, activationDerivative));
+            _neurons.push_back(new NeuronType(0.0, activation));
     }
 
     BasicLayer(std::initializer_list<SnnVal> values ) {
         // _neurons.reserve(values.size());
         for (SnnVal value : values)
-            _neurons.push_back(new NeuronType(value, snn::logSigmoid, snn::logSigmoidDerivative));
+            _neurons.push_back(new NeuronType(value, new LogSigmoid));
     }
 
     virtual void forward() {

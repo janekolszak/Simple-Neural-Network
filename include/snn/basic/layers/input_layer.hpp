@@ -3,6 +3,7 @@
 
 // #include <snn/basic/neurons/input_neuron.hpp>
 #include <snn/basic/layers/basic_layer.hpp>
+#include <snn/basic/neurons/activation_functions.hpp>
 
 namespace snn {
 
@@ -10,9 +11,8 @@ template <typename NeuronType, typename... LearningParams>
 struct InputLayer: public BasicLayer<NeuronType, LearningParams...> {
 
     InputLayer(size_t numNeurons,
-               SnnVal (*activation)(SnnVal),
-               SnnVal (*activationDerivative)(SnnVal)):
-        BasicLayer<NeuronType, LearningParams...>(numNeurons, activation, activationDerivative) {}
+               ActivationFunction *activation):
+        BasicLayer<NeuronType, LearningParams...>(numNeurons, activation) {}
 
     InputLayer(std::initializer_list<SnnVal> values):
         BasicLayer<NeuronType, LearningParams...>(values) {}

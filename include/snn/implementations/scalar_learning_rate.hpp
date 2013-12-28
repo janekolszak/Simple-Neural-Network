@@ -2,20 +2,19 @@
 #define SNN_SCALAR_LEARNING_RATE_HPP
 
 #include <snn/types.hpp>
-#include <snn/basic/networks/basic_perceptron.hpp>
 #include <snn/basic/neurons/basic_neuron.hpp>
+#include <snn/basic/networks/basic_perceptron.hpp>
 
 namespace snn {
 
 struct ScalarLearningRateNeuron: BasicNeuron<SnnVal> {
 
     ScalarLearningRateNeuron(): BasicNeuron<SnnVal>() {}
+
     ScalarLearningRateNeuron(SnnVal value,
-                             SnnVal (*activation)(SnnVal),
-                             SnnVal (*activationDerivative)(SnnVal))
+                             ActivationFunction *activation)
         : BasicNeuron<SnnVal>(value,
-                              activation,
-                              activationDerivative) {}
+                              activation) {}
 
     ScalarLearningRateNeuron &operator=(SnnVal newValue) {
         _value = newValue;
@@ -31,7 +30,6 @@ struct ScalarLearningRateNeuron: BasicNeuron<SnnVal> {
             *itW += *itV * learningRate * _delta;
         }
         _bias += learningRate * _delta;
-        // cout << _bias << endl;
     }
 };
 
@@ -47,8 +45,7 @@ struct ScalarLearningRatePerceptron: BasicPerceptron<ScalarLearningRateNeuron, S
 };
 
 
-void train(ScalarLearningRatePerceptron &perceptron, SnnDataset dataset, size_t numEpochs) {
-    SnnVal learningRate = 0.7;
+void train(ScalarLearningRatePerceptron &perceptron, SnnDataset dataset, size_t numEpochs, SnnVal learningRate = 0.8) {
 
     for (size_t i = 0; i < numEpochs; ++i) {
         for (auto itSet =  dataset.begin();

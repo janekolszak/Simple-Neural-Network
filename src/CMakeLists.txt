@@ -5,5 +5,5 @@ MESSAGE ("Files: " ${project_SRCS})
 
 ADD_LIBRARY(${APPLICATION_CODENAME} SHARED ${project_SRCS})
 
-SET (project_LIBS ${Boost_LIBRARIES})
+SET (project_LIBS ${PYTHON_LIBRARIES} ${Boost_LIBRARIES} )
 SET (project_BIN ${PROJECT_NAME})

@@ -6,21 +6,7 @@
 
 namespace snn {
 
-/**
- * Function for connecting two neurons.
- * Call it only once per pair.
- *
- * @param source neuron that generates the signal
- * @param sink   neuron that recieves the signal
- * @param weight weight of the connection
- */
-template<typename... LearningParams>
-void connectNeurons(BasicNeuron<LearningParams...> &source,
-                    BasicNeuron<LearningParams...> &sink,
-                    SnnVal weight) {
-    sink.connectSource(source, weight);
-    source.connectSink(sink);
-}
+
 
 } // namespace snn
 

@@ -2,6 +2,7 @@
 #define SNN_BASIC_PERCEPTRON_HPP
 
 #include <initializer_list>
+#include <vector>
 #include <iterator>     // std::advance std::prev
 #include <chrono>
 #include <iostream>
@@ -32,7 +33,7 @@ struct BasicPerceptron {
     BasicPerceptron(std::initializer_list<size_t> layerSizes)
         : BasicPerceptron(layerSizes, 0.0, 1.0) {}
 
-    BasicPerceptron(std::initializer_list<size_t> layerSizes,
+    BasicPerceptron(std::vector<size_t> layerSizes,
                     const SnnVal &outMin,
                     const SnnVal &outMax)
     {

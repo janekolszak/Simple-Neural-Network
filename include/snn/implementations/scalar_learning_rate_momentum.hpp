@@ -1,6 +1,8 @@
 #ifndef SNN_SCALAR_LEARNING_RATE_WITH_MOMENTUM_HPP
 #define SNN_SCALAR_LEARNING_RATE_WITH_MOMENTUM_HPP
 
+#include <vector>
+
 #include <snn/types.hpp>
 #include <snn/basic/networks/basic_perceptron.hpp>
 #include <snn/basic/neurons/basic_neuron.hpp>

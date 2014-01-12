@@ -11,10 +11,10 @@ namespace snn {
 template <typename... LearningParams>
 struct BasicNeuron {
 
-    SnnVal _value    = 0.0;
+    SnnVal _value    = 0.0; ///< neuron's output
     SnnVal _inputSum = 0.0; ///< linear sum of inputs
+    SnnVal _delta    = 0.0; ///< error from the back-propagation
     SnnVal _bias     = 0.0;
-    SnnVal _delta    = 0.0;
 
     SnnValVec    _inputWeights;
     SnnValRefVec _outputWeights;
@@ -93,6 +93,22 @@ struct BasicNeuron {
 template <typename... LearningParams>
 SnnVal operator-(const SnnVal &value, const BasicNeuron<LearningParams...> &neuron) {
     return value - neuron._value;
+}
+
+/**
+ * Function for connecting two neurons.
+ * Call it only once per pair.
+ *
+ * @param source neuron that generates the signal
+ * @param sink   neuron that recieves the signal
+ * @param weight weight of the connection
+ */
+template<typename... LearningParams>
+void connectNeurons(BasicNeuron<LearningParams...> &source,
+                    BasicNeuron<LearningParams...> &sink,
+                    SnnVal weight) {
+    sink.connectSource(source, weight);
+    source.connectSink(sink);
 }
 
 } // namespace snn

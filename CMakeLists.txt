@@ -38,7 +38,7 @@ LIST (APPEND CMAKE_PREFIX_PATH "${MAINFOLDER}")
 INCLUDE_DIRECTORIES ("${MAINFOLDER}/include")
 
 #
-# Locate Project Prerequisites 
+# Locate Project Prerequisites
 #
 SET(Boost_USE_SHARED_LIBS ON)
 SET(Boost_USE_STATIC_LIBS OFF)

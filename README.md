@@ -1,3 +1,5 @@
+**Discontinued!** Check https://github.com/janekolszak/graph-tool-nn for a python3.x library.
+
 # Simple Neural Network
 
 Simple Neural Network (SNN) is a <b>C++</b> library (<b>Python bindings planned</b>) with an implementation of artificial neural networks. The main objective is to deliver an understandable but powerful library, which could be easily modified by <b>anyone</b> .
